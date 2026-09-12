@@ -79,7 +79,8 @@
                         <p class="text-gray-500 font-medium">Carica qui la foto dal catalogo Hummel</p>
                         <p class="text-gray-400 text-sm mt-2">La tua immagine apparirà qui.</p>
                     </div>
-                    <img id="hummel-image-preview" src="" alt="Anteprima" class="w-full h-full object-contain transition-opacity duration-300 opacity-0 z-10 relative rounded-lg shadow-sm hidden">
+                    <!-- CORRECCIÓN VISUAL: Imágenes centradas y contenidas -->
+                    <img id="hummel-image-preview" src="" alt="Anteprima" class="max-w-full max-h-full object-contain transition-opacity duration-300 opacity-0 z-10 relative shadow-sm hidden mix-blend-multiply">
                 </div>
 
                 <div class="md:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-white">
@@ -146,7 +147,7 @@
                 <span class="font-bold text-lg text-gray-700">Totale Stimato:</span>
                 <span id="cart-total" class="font-bold text-2xl text-aretusa-red">€0.00</span>
             </div>
-             <!-- Botón configurado para Google Apps Script -->
+            <!-- Botón de Envío -->
             <button id="send-order-btn" onclick="sendOrderGoogle()" class="w-full bg-blue-600 text-white py-3 px-4 rounded-xl hover:bg-blue-700 transition font-bold flex items-center justify-center shadow-md">
                 <i class="fas fa-paper-plane mr-2 text-xl"></i> Invia Ordine
             </button>
@@ -158,18 +159,18 @@
     <div id="toast-container"></div>
 
     <script>
-        // BASE DE DATOS DE PRODUCTOS SHOPVIL - EXACTAMENTE COMO EN GITHUB
+        // BASE DE DATOS DE PRODUCTOS SHOPVIL EXACTA
         const standardSizes = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
         
         const products = [
             { id: 1, name: "Maglia di gioco", price: 31.90, image: "MAGLIA DI GIOCO.jpg", sizes: standardSizes, customizable: true },
             { id: 2, name: "Pantaloncini di gioco", price: 27.50, image: "Pantaloncini gioco.jpg", sizes: standardSizes, customizable: true },
             { id: 3, name: "Maglia di gioco Portiere", price: 40.90, image: "Maglia portiere gioco.jpg", sizes: standardSizes, customizable: true },
-            { id: 4, name: "Pantalon di gioco portiere", price: 41.00, image: "Pantalone portiere.jpg", sizes: standardSizes, customizable: true },
-            { id: 5, name: "Zaino", price: 23.50, image: "Zaino.jpg", sizes: [], customizable: false }, // Sin talla
+            { id: 4, name: "Pantalone di gioco portiere", price: 41.00, image: "Pantalone portiere.jpg", sizes: standardSizes, customizable: true },
+            { id: 5, name: "Zaino", price: 23.50, image: "Zaino.jpg", sizes: [], customizable: false },
             { id: 6, name: "Bermuda", price: 24.50, image: "Bermudas.jpg", sizes: standardSizes, customizable: false },
             { id: 7, name: "Giubbotto", price: 48.00, image: "Bench jacket.jpg", sizes: standardSizes, customizable: false },
-            { id: 8, name: "Tuta", price: 48.00, image: "Tracksuit.png", sizes: standardSizes, customizable: false }, // Es un PNG
+            { id: 8, name: "Tuta", price: 48.00, image: "Tracksuit.png", sizes: standardSizes, customizable: false },
             { id: 9, name: "Polo", price: 24.50, image: "Polo.jpg", sizes: standardSizes, customizable: false }
         ];
 
@@ -210,10 +211,11 @@
                     `;
                 }
 
+                // CORRECCIÓN VISUAL: Caja h-64 (altura fija) con object-contain y mix-blend-multiply
                 grid.innerHTML += `
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden group flex flex-col">
-                        <div class="relative pt-[100%] bg-gray-100 flex items-center justify-center overflow-hidden">
-                            <img src="${p.image}" alt="${p.name}" class="absolute w-full h-full object-contain transition duration-300 group-hover:scale-105" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300/e5e7eb/a3a3a3?text=Immagine+Non+Trovata';">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden group flex flex-col border border-gray-100">
+                        <div class="bg-gray-100 flex items-center justify-center h-64 p-4 overflow-hidden">
+                            <img src="${p.image}" alt="${p.name}" class="max-w-full max-h-full object-contain mix-blend-multiply transition duration-300 group-hover:scale-105" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300/e5e7eb/a3a3a3?text=Foto+Non+Trovata';">
                         </div>
                         <div class="p-6 flex flex-col flex-grow">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">${p.name}</h3>
@@ -242,7 +244,12 @@
             const ph = document.getElementById('hummel-image-placeholder');
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) { preview.src = e.target.result; preview.classList.remove('hidden', 'opacity-0'); preview.classList.add('opacity-100'); ph.classList.add('opacity-0', 'hidden'); }
+                reader.onload = function(e) { 
+                    preview.src = e.target.result; 
+                    preview.classList.remove('hidden', 'opacity-0'); 
+                    preview.classList.add('opacity-100'); 
+                    ph.classList.add('opacity-0', 'hidden'); 
+                }
                 reader.readAsDataURL(input.files[0]);
             }
         }
@@ -289,6 +296,7 @@
             }
         }
 
+        // COMPRESOR DE IMÁGENES HUMMEL INTEGRADO
         function addHummelToCart() {
             const name = document.getElementById('hummel-name').value.trim();
             const ref = document.getElementById('hummel-ref').value.trim();
@@ -297,24 +305,40 @@
             
             if (!name || !ref || !size) return showToast('Compila Nome, Referenza e Taglia.', 'error');
 
-            const processHummelItem = (imageDataUrl) => {
+            const processHummelItem = (compressedDataUrl) => {
                 cart.push({ 
                     uniqueCartId: 'h_' + Date.now(), 
                     name, price: 0, 
-                    image: imageDataUrl || 'https://via.placeholder.com/100x100?text=Foto+Non+Fornita', 
-                    sizes: [size], size, quantity: 1, isHummel: true, hummelRef: ref, hasRealPhoto: !!imageDataUrl
+                    image: compressedDataUrl || 'https://via.placeholder.com/100x100?text=Foto+Non+Fornita', 
+                    sizes: [size], size, quantity: 1, isHummel: true, hummelRef: ref, hasRealPhoto: !!compressedDataUrl
                 });
                 updateCartUI(); saveCart(); showToast('Articolo Hummel aggiunto!'); toggleCart();
                 
                 document.getElementById('hummel-name').value = ''; document.getElementById('hummel-ref').value = '';
                 if(photoInput) photoInput.value = '';
-                previewHummelImage(photoInput);
+                document.getElementById('hummel-image-preview').classList.add('hidden');
+                document.getElementById('hummel-image-placeholder').classList.remove('hidden', 'opacity-0');
             };
 
             if (photoInput.files && photoInput.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) { processHummelItem(e.target.result); };
-                reader.onerror = function(e) { processHummelItem(null); };
+                reader.onload = function(e) { 
+                    // Comprimir la imagen para que el correo no colapse
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 400; // Reducimos el ancho para que pese poquísimo en el email
+                        const scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scaleSize;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        // Exportar como JPG ligero
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                        processHummelItem(compressedDataUrl);
+                    };
+                    img.src = e.target.result;
+                };
                 reader.readAsDataURL(photoInput.files[0]);
             } else {
                 processHummelItem(null);
@@ -356,7 +380,7 @@
 
                 return `
                     <div class="flex items-start space-x-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm relative">
-                        <img src="${imgSrc}" class="w-16 h-16 object-contain rounded-md border border-gray-200" onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=Nessuna';">
+                        <img src="${imgSrc}" class="w-16 h-16 object-contain rounded-md border border-gray-200 mix-blend-multiply" onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=Nessuna';">
                         <div class="flex-1">
                             <h4 class="font-bold text-gray-800 leading-tight line-clamp-1">${i.name}</h4>
                             <p class="text-xs text-gray-500 mt-1">Taglia: <span class="font-bold text-gray-700">${i.size}</span> ${i.isHummel ? `| Ref: ${i.hummelRef}` : ''}</p>
@@ -377,9 +401,9 @@
             document.getElementById('cart-total').innerText = `€${total.toFixed(2)}`;
         }
 
-        // --- INTEGRACIÓN CON GOOGLE APPS SCRIPT ---
+        // --- INTEGRACIÓN MEJORADA CON GOOGLE APPS SCRIPT ---
         async function sendOrderGoogle() {
-            // URL OFICIAL DE GOOGLE YA INYECTADA:
+            // TU ENLACE YA INSERTADO
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbylNZ7WbQ0-WSmVVUb1W4ryxFrTNilT43rVKokE7qXnd3MJdVilW_4JNzXch3wUh-gD/exec"; 
 
             const customerName = document.getElementById('customer-name').value.trim();
@@ -394,8 +418,10 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Invio in corso...';
             btn.disabled = true;
 
-            let baseUrl = window.location.href.split('?')[0].replace(/index\.html$/, '');
-            if (!baseUrl.endsWith('/')) baseUrl += '/';
+            // Formamos la ruta base oficial de tu GitHub de manera segura
+            let pathArray = window.location.pathname.split('/');
+            if(pathArray[pathArray.length-1].includes('.html')) pathArray.pop();
+            let baseUrl = window.location.origin + pathArray.join('/') + '/';
 
             let orderSummaryHtml = "";
             
@@ -407,7 +433,7 @@
                     
                     orderSummaryHtml += `
                     <div style="display: flex; margin-bottom: 20px; border-bottom: 1px solid #eaeaea; padding-bottom: 15px;">
-                        <img src="${imgSrc}" style="width: 100px; height: 100px; object-fit: contain; border-radius: 8px; margin-right: 20px; border: 1px solid #ddd;" />
+                        <img src="${imgSrc}" style="max-width: 120px; max-height: 120px; object-fit: contain; border-radius: 8px; margin-right: 20px; border: 1px solid #ddd;" />
                         <div>
                             <h4 style="margin: 0 0 8px 0; color: #c8102e; font-size: 16px;">🔴 [HUMMEL] ${item.quantity}x ${item.name}</h4>
                             <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Referenza:</strong> ${item.hummelRef}</p>
@@ -416,12 +442,12 @@
                         </div>
                     </div>`;
                 } else {
-                    // Convertimos la URL de la imagen para asegurarnos de que Gmail lee bien los espacios del nombre del archivo
-                    let fullImageUrl = baseUrl + encodeURI(item.image);
+                    // Convertimos la URL para que no falle si la foto tiene espacios (Ej: "Bench jacket.jpg" -> "Bench%20jacket.jpg")
+                    let fullImageUrl = baseUrl + encodeURIComponent(item.image);
 
                     orderSummaryHtml += `
                     <div style="display: flex; margin-bottom: 20px; border-bottom: 1px solid #eaeaea; padding-bottom: 15px;">
-                        <img src="${fullImageUrl}" style="width: 100px; height: 100px; object-fit: contain; border-radius: 8px; margin-right: 20px; border: 1px solid #ddd;" />
+                        <img src="${fullImageUrl}" style="max-width: 120px; max-height: 120px; object-fit: contain; border-radius: 8px; margin-right: 20px; border: 1px solid #ddd;" />
                         <div>
                             <h4 style="margin: 0 0 8px 0; color: #006747; font-size: 16px;">🟢 [ARETUSA] ${item.quantity}x ${item.name}</h4>
                             <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Taglia:</strong> ${item.size}</p>`;
