@@ -60,9 +60,7 @@
 
         <section id="tab-aretusa-content" class="tab-content">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Collezione Pallamano Aretusa</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="product-grid">
-                <!-- Productos dinámicos -->
-            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="product-grid"></div>
         </section>
 
         <section id="tab-hummel-content" class="tab-content hidden">
@@ -130,7 +128,6 @@
              <div class="mb-4 space-y-3">
                 <h3 class="font-bold text-gray-700 mb-2">I tuoi Dati (Obbligatori)</h3>
                 <input type="text" id="customer-name" placeholder="Nome e Cognome *" class="w-full p-2 border border-gray-300 rounded-md text-sm">
-                <!-- NUEVO CAMPO DE EMAIL -->
                 <input type="email" id="customer-email" placeholder="Email (per ricevere la ricevuta) *" class="w-full p-2 border border-gray-300 rounded-md text-sm">
                 <input type="tel" id="customer-phone" placeholder="Telefono *" class="w-full p-2 border border-gray-300 rounded-md text-sm">
                 <select id="customer-team" class="w-full p-2 border border-gray-300 rounded-md text-sm bg-white">
@@ -150,13 +147,11 @@
     </div>
     <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-20" onclick="toggleCart()"></div>
 
-    <!-- Contenedor de Toasts -->
     <div id="toast-container"></div>
 
     <script>
         const standardSizes = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
         
-        // BASE DE DATOS ACTUALIZADA CON COLORES Y OPCIONES ESPECÍFICAS
         const products = [
             { id: 1, name: "Maglia di gioco", price: 31.90, image: "MAGLIA DI GIOCO.jpg", sizes: standardSizes, colors: ["Rossa", "Nera"], needsName: true, needsNumber: true },
             { id: 2, name: "Pantaloncini di gioco", price: 27.50, image: "Pantaloncini gioco.jpg", sizes: standardSizes, colors: [], needsName: false, needsNumber: true },
@@ -188,7 +183,6 @@
             grid.innerHTML = '';
             
             products.forEach(p => {
-                // Selector de Talla
                 let sizeHtml = '';
                 if(p.sizes && p.sizes.length > 0) {
                     sizeHtml = `<select id="size-${p.id}" class="border border-gray-300 rounded p-1 text-sm ml-2 font-medium bg-gray-50 outline-none focus:border-aretusa-red">
@@ -196,7 +190,6 @@
                     </select>`;
                 }
 
-                // Selector de Color
                 let colorHtml = '';
                 if(p.colors && p.colors.length > 0) {
                     colorHtml = `
@@ -208,18 +201,13 @@
                     </div>`;
                 }
 
-                // Personalización Específica
                 let customizationHtml = '';
                 if(p.needsName || p.needsNumber) {
                     customizationHtml = `<div class="mt-3 mb-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
                         <p class="text-[10px] font-bold text-gray-500 mb-2 uppercase tracking-wider"><i class="fas fa-pen mr-1"></i> Personalizzazione</p>`;
                     
-                    if (p.needsName) {
-                        customizationHtml += `<input type="text" id="custom-name-${p.id}" placeholder="Nome (es. ROSSI)" class="w-full mb-2 p-2 text-sm border border-gray-300 rounded outline-none focus:border-aretusa-red uppercase transition">`;
-                    }
-                    if (p.needsNumber) {
-                        customizationHtml += `<input type="number" id="custom-number-${p.id}" placeholder="Numero (es. 10)" class="w-full p-2 text-sm border border-gray-300 rounded outline-none focus:border-aretusa-red transition" min="0" max="99">`;
-                    }
+                    if (p.needsName) customizationHtml += `<input type="text" id="custom-name-${p.id}" placeholder="Nome (es. ROSSI)" class="w-full mb-2 p-2 text-sm border border-gray-300 rounded outline-none focus:border-aretusa-red uppercase transition">`;
+                    if (p.needsNumber) customizationHtml += `<input type="number" id="custom-number-${p.id}" placeholder="Numero (es. 10)" class="w-full p-2 text-sm border border-gray-300 rounded outline-none focus:border-aretusa-red transition" min="0" max="99">`;
                     customizationHtml += `</div>`;
                 }
 
@@ -281,7 +269,6 @@
             let customName = product.needsName ? document.getElementById(`custom-name-${id}`).value.trim().toUpperCase() : '';
             let customNumber = product.needsNumber ? document.getElementById(`custom-number-${id}`).value.trim() : '';
 
-            // ID único que separa variaciones
             const uniqueCartId = `a_${id}_${size}_${color}_${customName}_${customNumber}`;
 
             const item = cart.find(i => i.uniqueCartId === uniqueCartId);
@@ -289,9 +276,7 @@
             if (item) {
                 item.quantity++;
             } else {
-                cart.push({ 
-                    ...product, size, color, quantity: 1, isHummel: false, customName, customNumber, uniqueCartId 
-                });
+                cart.push({ ...product, size, color, quantity: 1, isHummel: false, customName, customNumber, uniqueCartId });
             }
             
             updateCartUI(); saveCart(); showToast(`Aggiunto!`); toggleCart();
@@ -308,12 +293,12 @@
             
             if (!name || !ref || !size) return showToast('Compila Nome, Referenza e Taglia.', 'error');
 
-            const processHummelItem = (compressedDataUrl) => {
+            const processHummelItem = (base64Clean) => {
                 cart.push({ 
                     uniqueCartId: 'h_' + Date.now(), 
                     name, price: 0, 
-                    image: compressedDataUrl || 'https://via.placeholder.com/100x100?text=Foto+Non+Fornita', 
-                    sizes: [size], size, color: '', quantity: 1, isHummel: true, hummelRef: ref, hasRealPhoto: !!compressedDataUrl
+                    image: base64Clean || 'https://via.placeholder.com/100x100?text=Foto+Non+Fornita', 
+                    sizes: [size], size, color: '', quantity: 1, isHummel: true, hummelRef: ref, hasRealPhoto: !!base64Clean
                 });
                 updateCartUI(); saveCart(); showToast('Articolo Hummel aggiunto!'); toggleCart();
                 
@@ -335,7 +320,9 @@
                         canvas.height = img.height * scaleSize;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        processHummelItem(canvas.toDataURL('image/jpeg', 0.6));
+                        // GUARDAMOS SÓLO LOS DATOS PUROS DE LA IMAGEN
+                        let fullData = canvas.toDataURL('image/jpeg', 0.6);
+                        processHummelItem(fullData);
                     };
                     img.src = e.target.result;
                 };
@@ -383,9 +370,11 @@
                     customInfoHtml += `</p>`;
                 }
 
+                let imgSrc = i.isHummel && i.hasRealPhoto ? i.image : i.image;
+
                 return `
                     <div class="flex items-start space-x-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm relative">
-                        <img src="${i.image}" class="w-16 h-16 object-contain rounded-md border border-gray-200 mix-blend-multiply" onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=Nessuna';">
+                        <img src="${imgSrc}" class="w-16 h-16 object-contain rounded-md border border-gray-200 mix-blend-multiply" onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=Nessuna';">
                         <div class="flex-1">
                             <h4 class="font-bold text-gray-800 leading-tight line-clamp-1">${i.name}</h4>
                             <p class="text-xs text-gray-500 mt-1">Taglia: ${detailsHtml}</p>
@@ -407,8 +396,10 @@
         }
 
         async function sendOrderGoogle() {
-            // URL DE GOOGLE APPS SCRIPT
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // AQUI VA LA URL OFICIAL DE TU PROYECTO
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbylNZ7WbQ0-WSmVVUb1W4ryxFrTNilT43rVKokE7qXnd3MJdVilW_4JNzXch3wUh-gD/exec"; 
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             const customerName = document.getElementById('customer-name').value.trim();
             const customerPhone = document.getElementById('customer-phone').value.trim();
@@ -418,7 +409,6 @@
             if (cart.length === 0) return showToast('Il carrello è vuoto.', 'error');
             if (!customerName || !customerPhone || !customerTeam || !customerEmail) return showToast('Compila tutti i dati.', 'error');
             
-            // Generar Referencia Única
             const refPedido = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
 
             const btn = document.getElementById('send-order-btn');
@@ -431,12 +421,24 @@
             let baseUrl = window.location.origin + pathArray.join('/') + '/';
 
             let orderSummaryHtml = "";
+            let arrInlineImages = [];
             
-            cart.forEach(item => {
+            cart.forEach((item, index) => {
                 let itemTotal = (item.price * item.quantity).toFixed(2);
                 
                 if(item.isHummel) {
-                    let imgSrc = item.hasRealPhoto ? item.image : "https://via.placeholder.com/150?text=Nessuna+Foto";
+                    let cidName = "hummel_img_" + index;
+                    let imgSrc = "https://via.placeholder.com/150?text=Nessuna+Foto";
+                    
+                    if (item.hasRealPhoto) {
+                        imgSrc = "cid:" + cidName;
+                        // PREPARAMOS LA FOTO PARA GOOGLE (Mandamos los datos puros)
+                        arrInlineImages.push({
+                            cid: cidName,
+                            data: item.image
+                        });
+                    }
+
                     orderSummaryHtml += `
                     <div style="display: flex; margin-bottom: 20px; border-bottom: 1px solid #eaeaea; padding-bottom: 15px;">
                         <img src="${imgSrc}" style="max-width: 100px; max-height: 100px; object-fit: contain; border-radius: 8px; margin-right: 20px; border: 1px solid #ddd;" />
@@ -487,6 +489,11 @@
             formData.append('referencia', refPedido);
             formData.append('ordenHtml', orderSummaryHtml);
             
+            // Adjuntamos el listado de imágenes para que Google las decodifique
+            if (arrInlineImages.length > 0) {
+                formData.append('inlineImages', JSON.stringify(arrInlineImages));
+            }
+
             try {
                 await fetch(GOOGLE_SCRIPT_URL, {
                     method: "POST",
