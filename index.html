@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store Pallamano Aretusa</title>
+    <title>ShopVil - Pallamano Aretusa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -34,8 +34,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex-shrink-0 flex items-center">
-                    <div class="h-10 w-10 rounded-full bg-aretusa-red flex items-center justify-center text-white font-bold mr-2">PA</div>
-                    <span class="font-bold text-xl text-gray-800">Pallamano Aretusa Store</span>
+                    <div class="h-10 w-10 rounded-full bg-aretusa-red flex items-center justify-center text-white font-bold mr-2">SV</div>
+                    <span class="font-bold text-xl text-gray-800">ShopVil <span class="text-sm font-normal text-gray-500 hidden sm:inline">| Pallamano Aretusa</span></span>
                 </div>
                 <div class="relative cursor-pointer" onclick="toggleCart()">
                     <i class="fas fa-shopping-cart text-2xl text-gray-600 hover:text-aretusa-red transition"></i>
@@ -53,10 +53,10 @@
             <div class="border-b border-gray-200">
                 <nav class="-mb-px flex space-x-8" aria-label="Tabs">
                     <button id="tab-aretusa-btn" onclick="switchTab('aretusa')" class="tab-btn border-aretusa-red text-aretusa-red whitespace-nowrap py-4 px-1 border-b-2 font-bold text-lg flex items-center">
-                        <i class="fas fa-tshirt mr-2"></i> Store Aretusa
+                        <i class="fas fa-tshirt mr-2"></i> Prodotti Ufficiali
                     </button>
                     <button id="tab-hummel-btn" onclick="switchTab('hummel')" class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg flex items-center">
-                        <i class="fas fa-clipboard-list mr-2"></i> Catalogo Hummel (Su Ordinazione)
+                        <i class="fas fa-clipboard-list mr-2"></i> Ordine Hummel
                     </button>
                 </nav>
             </div>
@@ -64,7 +64,7 @@
 
         <!-- Contenido Pestaña Aretusa -->
         <section id="tab-aretusa-content" class="tab-content">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Prodotti Ufficiali Pallamano Aretusa</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Collezione Pallamano Aretusa</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="product-grid">
                 <!-- Productos dinámicos (Renderizados por JS) -->
             </div>
@@ -157,24 +157,23 @@
     <!-- Contenedor de Toasts -->
     <div id="toast-container"></div>
 
-
     <script>
-        // BASE DE DATOS DE PRODUCTOS OFICIALES ARETUSA
+        // BASE DE DATOS DE PRODUCTOS SHOPVIL - EXACTAMENTE COMO EN GITHUB
         const standardSizes = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
         
         const products = [
             { id: 1, name: "Maglia di gioco", price: 31.90, image: "MAGLIA DI GIOCO.jpg", sizes: standardSizes, customizable: true },
-            { id: 2, name: "Pantaloncini di gioco", price: 27.50, image: "1000051498.jpg", sizes: standardSizes, customizable: true },
-            { id: 3, name: "Maglia di gioco Portiere", price: 40.90, image: "1000051500.jpg", sizes: standardSizes, customizable: true },
-            { id: 4, name: "Pantalon di gioco portiere", price: 41.00, image: "1000051502.jpg", sizes: standardSizes, customizable: true },
-            { id: 5, name: "Zaino", price: 23.50, image: "1000051504.jpg", sizes: [], customizable: false }, // Sin talla
-            { id: 6, name: "Polo", price: 24.50, image: "1000051506.jpg", sizes: standardSizes, customizable: false },
-            { id: 7, name: "Tuta", price: 48.00, image: "1000051508.jpg", sizes: standardSizes, customizable: false },
-            { id: 8, name: "Giubbotto", price: 48.00, image: "1000051510.jpg", sizes: standardSizes, customizable: false },
-            { id: 9, name: "Bermuda", price: 24.50, image: "1000051512.jpg", sizes: standardSizes, customizable: false }
+            { id: 2, name: "Pantaloncini di gioco", price: 27.50, image: "Pantaloncini gioco.jpg", sizes: standardSizes, customizable: true },
+            { id: 3, name: "Maglia di gioco Portiere", price: 40.90, image: "Maglia portiere gioco.jpg", sizes: standardSizes, customizable: true },
+            { id: 4, name: "Pantalon di gioco portiere", price: 41.00, image: "Pantalone portiere.jpg", sizes: standardSizes, customizable: true },
+            { id: 5, name: "Zaino", price: 23.50, image: "Zaino.jpg", sizes: [], customizable: false }, // Sin talla
+            { id: 6, name: "Bermuda", price: 24.50, image: "Bermudas.jpg", sizes: standardSizes, customizable: false },
+            { id: 7, name: "Giubbotto", price: 48.00, image: "Bench jacket.jpg", sizes: standardSizes, customizable: false },
+            { id: 8, name: "Tuta", price: 48.00, image: "Tracksuit.png", sizes: standardSizes, customizable: false }, // Es un PNG
+            { id: 9, name: "Polo", price: 24.50, image: "Polo.jpg", sizes: standardSizes, customizable: false }
         ];
 
-        let cart = JSON.parse(localStorage.getItem('aretusaCart')) || [];
+        let cart = JSON.parse(localStorage.getItem('shopvilCart')) || [];
 
         function showToast(message, type = 'success') {
             const toastContainer = document.getElementById('toast-container');
@@ -193,7 +192,6 @@
             grid.innerHTML = '';
             
             products.forEach(p => {
-                // Generar HTML de tallas (si el producto las necesita)
                 let sizeHtml = '';
                 if(p.sizes && p.sizes.length > 0) {
                     sizeHtml = `<select id="size-${p.id}" class="border border-gray-300 rounded p-1 text-sm ml-2 font-medium bg-gray-50 outline-none focus:border-aretusa-red">
@@ -201,7 +199,6 @@
                     </select>`;
                 }
 
-                // Generar HTML de personalización (Nombre y Número)
                 let customizationHtml = '';
                 if(p.customizable) {
                     customizationHtml = `
@@ -215,9 +212,8 @@
 
                 grid.innerHTML += `
                     <div class="bg-white rounded-xl shadow-md overflow-hidden group flex flex-col">
-                        <!-- La imagen busca el archivo real. Si no existe, muestra un fondo gris roto, hasta que lo subas a GitHub -->
-                        <div class="relative pt-[100%] bg-gray-200">
-                            <img src="${p.image}" alt="${p.name}" class="absolute inset-0 w-full h-full object-cover" onerror="this.onerror=null; this.src='https://via.placeholder.com/300?text=Foto+Non+Trovata';">
+                        <div class="relative pt-[100%] bg-gray-100 flex items-center justify-center overflow-hidden">
+                            <img src="${p.image}" alt="${p.name}" class="absolute w-full h-full object-contain transition duration-300 group-hover:scale-105" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300/e5e7eb/a3a3a3?text=Immagine+Non+Trovata';">
                         </div>
                         <div class="p-6 flex flex-col flex-grow">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">${p.name}</h3>
@@ -256,9 +252,8 @@
             document.getElementById('cart-overlay').classList.toggle('hidden');
         }
 
-        function saveCart() { localStorage.setItem('aretusaCart', JSON.stringify(cart)); }
+        function saveCart() { localStorage.setItem('shopvilCart', JSON.stringify(cart)); }
 
-        // Función Añadir al Carrito (Actualizada para soportar personalizados)
         function addToCart(id) {
             const product = products.find(p => p.id === id);
             const sizeSelect = document.getElementById(`size-${id}`);
@@ -272,8 +267,6 @@
                 customNumber = document.getElementById(`custom-number-${id}`).value.trim();
             }
 
-            // Crear un ID único para el carrito que incluya las personalizaciones. 
-            // Así podemos pedir dos camisetas iguales pero con nombres distintos.
             const uniqueCartId = product.customizable 
                 ? `a_${id}_${size}_${customName}_${customNumber}` 
                 : `a_${id}_${size}`;
@@ -284,22 +277,12 @@
                 item.quantity++;
             } else {
                 cart.push({ 
-                    ...product, 
-                    size, 
-                    quantity: 1, 
-                    isHummel: false,
-                    customName,
-                    customNumber,
-                    uniqueCartId 
+                    ...product, size, quantity: 1, isHummel: false, customName, customNumber, uniqueCartId 
                 });
             }
             
-            updateCartUI(); 
-            saveCart(); 
-            showToast(`Aggiunto!`); 
-            toggleCart();
+            updateCartUI(); saveCart(); showToast(`Aggiunto!`); toggleCart();
 
-            // Limpiar inputs
             if (product.customizable) {
                 document.getElementById(`custom-name-${id}`).value = '';
                 document.getElementById(`custom-number-${id}`).value = '';
@@ -310,23 +293,32 @@
             const name = document.getElementById('hummel-name').value.trim();
             const ref = document.getElementById('hummel-ref').value.trim();
             const size = document.getElementById('hummel-size').value;
+            const photoInput = document.getElementById('hummel-photo');
             
             if (!name || !ref || !size) return showToast('Compila Nome, Referenza e Taglia.', 'error');
 
-            cart.push({ 
-                uniqueCartId: 'h_' + Date.now(), 
-                name, 
-                price: 0, 
-                image: 'https://via.placeholder.com/100x100?text=Hummel', 
-                sizes: [size], 
-                size, 
-                quantity: 1, 
-                isHummel: true, 
-                hummelRef: ref 
-            });
-            updateCartUI(); saveCart(); showToast('Articolo Hummel aggiunto!'); toggleCart();
-            
-            document.getElementById('hummel-name').value = ''; document.getElementById('hummel-ref').value = '';
+            const processHummelItem = (imageDataUrl) => {
+                cart.push({ 
+                    uniqueCartId: 'h_' + Date.now(), 
+                    name, price: 0, 
+                    image: imageDataUrl || 'https://via.placeholder.com/100x100?text=Foto+Non+Fornita', 
+                    sizes: [size], size, quantity: 1, isHummel: true, hummelRef: ref, hasRealPhoto: !!imageDataUrl
+                });
+                updateCartUI(); saveCart(); showToast('Articolo Hummel aggiunto!'); toggleCart();
+                
+                document.getElementById('hummel-name').value = ''; document.getElementById('hummel-ref').value = '';
+                if(photoInput) photoInput.value = '';
+                previewHummelImage(photoInput);
+            };
+
+            if (photoInput.files && photoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) { processHummelItem(e.target.result); };
+                reader.onerror = function(e) { processHummelItem(null); };
+                reader.readAsDataURL(photoInput.files[0]);
+            } else {
+                processHummelItem(null);
+            }
         }
 
         function removeFromCart(uniqueCartId) {
@@ -355,16 +347,18 @@
                 
                 const pDisplay = i.isHummel ? '<span class="text-xs text-orange-500 bg-orange-50 px-2 py-1 rounded">Da preventivare</span>' : `€${iTotal.toFixed(2)}`;
                 
-                // Mostrar datos de personalización si existen
                 let customInfoHtml = '';
                 if (i.customizable && (i.customName || i.customNumber)) {
                     customInfoHtml = `<p class="text-[11px] font-bold text-blue-600 mt-1.5 bg-blue-50 inline-block px-2 py-0.5 rounded">Nome: ${i.customName || '-'} | N°: ${i.customNumber || '-'}</p>`;
                 }
 
+                let imgSrc = i.isHummel && i.hasRealPhoto ? i.image : i.image;
+
                 return `
                     <div class="flex items-start space-x-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm relative">
+                        <img src="${imgSrc}" class="w-16 h-16 object-contain rounded-md border border-gray-200" onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=Nessuna';">
                         <div class="flex-1">
-                            <h4 class="font-bold text-gray-800 leading-tight">${i.name}</h4>
+                            <h4 class="font-bold text-gray-800 leading-tight line-clamp-1">${i.name}</h4>
                             <p class="text-xs text-gray-500 mt-1">Taglia: <span class="font-bold text-gray-700">${i.size}</span> ${i.isHummel ? `| Ref: ${i.hummelRef}` : ''}</p>
                             ${customInfoHtml}
                             
@@ -383,10 +377,10 @@
             document.getElementById('cart-total').innerText = `€${total.toFixed(2)}`;
         }
 
-
         // --- INTEGRACIÓN CON GOOGLE APPS SCRIPT ---
         async function sendOrderGoogle() {
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbylNZ7WbQ0-WSmVVUb1W4ryxFrTNilT43rVKokE7qXnd3MJdVilW_4JNzXch3wUh-gD/exec";
+            // URL OFICIAL DE GOOGLE YA INYECTADA:
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbylNZ7WbQ0-WSmVVUb1W4ryxFrTNilT43rVKokE7qXnd3MJdVilW_4JNzXch3wUh-gD/exec"; 
 
             const customerName = document.getElementById('customer-name').value.trim();
             const customerPhone = document.getElementById('customer-phone').value.trim();
@@ -400,34 +394,61 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Invio in corso...';
             btn.disabled = true;
 
-            // 1. Montamos el resumen del pedido
-            let orderSummary = "";
+            let baseUrl = window.location.href.split('?')[0].replace(/index\.html$/, '');
+            if (!baseUrl.endsWith('/')) baseUrl += '/';
+
+            let orderSummaryHtml = "";
+            
             cart.forEach(item => {
+                let itemTotal = (item.price * item.quantity).toFixed(2);
+                
                 if(item.isHummel) {
-                    orderSummary += `🔴 [HUMMEL] ${item.quantity}x ${item.name}\n`;
-                    orderSummary += `   - Referenza: ${item.hummelRef}\n`;
-                    orderSummary += `   - Taglia: ${item.size}\n\n`;
+                    let imgSrc = item.hasRealPhoto ? item.image : "https://via.placeholder.com/150?text=Nessuna+Foto";
+                    
+                    orderSummaryHtml += `
+                    <div style="display: flex; margin-bottom: 20px; border-bottom: 1px solid #eaeaea; padding-bottom: 15px;">
+                        <img src="${imgSrc}" style="width: 100px; height: 100px; object-fit: contain; border-radius: 8px; margin-right: 20px; border: 1px solid #ddd;" />
+                        <div>
+                            <h4 style="margin: 0 0 8px 0; color: #c8102e; font-size: 16px;">🔴 [HUMMEL] ${item.quantity}x ${item.name}</h4>
+                            <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Referenza:</strong> ${item.hummelRef}</p>
+                            <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Taglia:</strong> ${item.size}</p>
+                            <p style="margin: 0; font-size: 14px; color: #e67e22;"><strong>Prezzo:</strong> Da preventivare</p>
+                        </div>
+                    </div>`;
                 } else {
-                    orderSummary += `🟢 [ARETUSA] ${item.quantity}x ${item.name}\n`;
-                    orderSummary += `   - Taglia: ${item.size}\n`;
-                    // Añadir datos de personalización al correo si existen
+                    // Convertimos la URL de la imagen para asegurarnos de que Gmail lee bien los espacios del nombre del archivo
+                    let fullImageUrl = baseUrl + encodeURI(item.image);
+
+                    orderSummaryHtml += `
+                    <div style="display: flex; margin-bottom: 20px; border-bottom: 1px solid #eaeaea; padding-bottom: 15px;">
+                        <img src="${fullImageUrl}" style="width: 100px; height: 100px; object-fit: contain; border-radius: 8px; margin-right: 20px; border: 1px solid #ddd;" />
+                        <div>
+                            <h4 style="margin: 0 0 8px 0; color: #006747; font-size: 16px;">🟢 [ARETUSA] ${item.quantity}x ${item.name}</h4>
+                            <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Taglia:</strong> ${item.size}</p>`;
+                    
                     if (item.customizable && (item.customName || item.customNumber)) {
-                        orderSummary += `   - PERSONALIZZAZIONE: Nome [${item.customName || 'Nessuno'}] / Numero [${item.customNumber || 'Nessuno'}]\n`;
+                        orderSummaryHtml += `<p style="margin: 0 0 5px 0; font-size: 14px; background-color: #eef2ff; padding: 5px; border-radius: 4px; color: #3730a3;"><strong>Personalizzazione:</strong> Nome [${item.customName || 'Nessuno'}] / N° [${item.customNumber || 'Nessuno'}]</p>`;
                     }
-                    orderSummary += `   - Prezzo: €${(item.price * item.quantity).toFixed(2)}\n\n`;
+                    
+                    orderSummaryHtml += `
+                            <p style="margin: 0; font-size: 14px;"><strong>Subtotale:</strong> €${itemTotal}</p>
+                        </div>
+                    </div>`;
                 }
             });
-            orderSummary += `--------------------------------------\n`;
-            orderSummary += `TOTALE STIMATO (Solo Stock): ${document.getElementById('cart-total').innerText}\n`;
 
-            // 2. Preparamos los datos para Google
+            orderSummaryHtml += `
+            <div style="text-align: right; margin-top: 25px; padding-top: 15px; border-top: 2px solid #c8102e;">
+                <h3 style="margin: 0; color: #333;">TOTALE STIMATO (Solo Stock)</h3>
+                <h2 style="margin: 5px 0 0 0; color: #c8102e; font-size: 24px;">${document.getElementById('cart-total').innerText}</h2>
+            </div>`;
+
             const formData = new FormData();
             formData.append('nombre', customerName);
             formData.append('telefono', customerPhone);
             formData.append('squadra', customerTeam);
-            formData.append('orden', orderSummary);
+            formData.append('ordenHtml', orderSummaryHtml);
             
-            // 3. Enviamos los datos
             try {
                 await fetch(GOOGLE_SCRIPT_URL, {
                     method: "POST",
