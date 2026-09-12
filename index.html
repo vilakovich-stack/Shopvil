@@ -29,7 +29,6 @@
 </head>
 <body class="bg-gray-50">
 
-    <!-- Navbar -->
     <nav class="bg-white shadow-md fixed w-full z-10 top-0">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
@@ -45,10 +44,7 @@
         </div>
     </nav>
 
-    <!-- Contenido Principal -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
-
-        <!-- Sistema de Pestañas (Tabs) -->
         <div class="mb-8">
             <div class="border-b border-gray-200">
                 <nav class="-mb-px flex space-x-8" aria-label="Tabs">
@@ -62,15 +58,13 @@
             </div>
         </div>
 
-        <!-- Contenido Pestaña Aretusa -->
         <section id="tab-aretusa-content" class="tab-content">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Collezione Pallamano Aretusa</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="product-grid">
-                <!-- Productos dinámicos (Renderizados por JS) -->
+                <!-- Productos dinámicos -->
             </div>
         </section>
 
-        <!-- Contenido Pestaña Hummel -->
         <section id="tab-hummel-content" class="tab-content hidden">
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden md:flex">
                 <div class="md:w-1/2 bg-gray-100 flex items-center justify-center p-8 relative min-h-[300px] md:min-h-[500px]">
@@ -79,7 +73,6 @@
                         <p class="text-gray-500 font-medium">Carica qui la foto dal catalogo Hummel</p>
                         <p class="text-gray-400 text-sm mt-2">La tua immagine apparirà qui.</p>
                     </div>
-                    <!-- CORRECCIÓN VISUAL: Imágenes centradas y contenidas -->
                     <img id="hummel-image-preview" src="" alt="Anteprima" class="max-w-full max-h-full object-contain transition-opacity duration-300 opacity-0 z-10 relative shadow-sm hidden mix-blend-multiply">
                 </div>
 
@@ -137,6 +130,8 @@
              <div class="mb-4 space-y-3">
                 <h3 class="font-bold text-gray-700 mb-2">I tuoi Dati (Obbligatori)</h3>
                 <input type="text" id="customer-name" placeholder="Nome e Cognome *" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+                <!-- NUEVO CAMPO DE EMAIL -->
+                <input type="email" id="customer-email" placeholder="Email (per ricevere la ricevuta) *" class="w-full p-2 border border-gray-300 rounded-md text-sm">
                 <input type="tel" id="customer-phone" placeholder="Telefono *" class="w-full p-2 border border-gray-300 rounded-md text-sm">
                 <select id="customer-team" class="w-full p-2 border border-gray-300 rounded-md text-sm bg-white">
                     <option value="">Categoria/Squadra *</option><option value="Senior Maschile">Senior Maschile</option><option value="Senior Femminile">Senior Femminile</option><option value="U17">Under 17</option><option value="U15">Under 15</option><option value="U13">Under 13</option><option value="Altro">Altro / Tifoso</option>
@@ -147,7 +142,7 @@
                 <span class="font-bold text-lg text-gray-700">Totale Stimato:</span>
                 <span id="cart-total" class="font-bold text-2xl text-aretusa-red">€0.00</span>
             </div>
-            <!-- Botón de Envío -->
+            
             <button id="send-order-btn" onclick="sendOrderGoogle()" class="w-full bg-blue-600 text-white py-3 px-4 rounded-xl hover:bg-blue-700 transition font-bold flex items-center justify-center shadow-md">
                 <i class="fas fa-paper-plane mr-2 text-xl"></i> Invia Ordine
             </button>
@@ -159,19 +154,19 @@
     <div id="toast-container"></div>
 
     <script>
-        // BASE DE DATOS DE PRODUCTOS SHOPVIL EXACTA
         const standardSizes = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
         
+        // BASE DE DATOS ACTUALIZADA CON COLORES Y OPCIONES ESPECÍFICAS
         const products = [
-            { id: 1, name: "Maglia di gioco", price: 31.90, image: "MAGLIA DI GIOCO.jpg", sizes: standardSizes, customizable: true },
-            { id: 2, name: "Pantaloncini di gioco", price: 27.50, image: "Pantaloncini gioco.jpg", sizes: standardSizes, customizable: true },
-            { id: 3, name: "Maglia di gioco Portiere", price: 40.90, image: "Maglia portiere gioco.jpg", sizes: standardSizes, customizable: true },
-            { id: 4, name: "Pantalone di gioco portiere", price: 41.00, image: "Pantalone portiere.jpg", sizes: standardSizes, customizable: true },
-            { id: 5, name: "Zaino", price: 23.50, image: "Zaino.jpg", sizes: [], customizable: false },
-            { id: 6, name: "Bermuda", price: 24.50, image: "Bermudas.jpg", sizes: standardSizes, customizable: false },
-            { id: 7, name: "Giubbotto", price: 48.00, image: "Bench jacket.jpg", sizes: standardSizes, customizable: false },
-            { id: 8, name: "Tuta", price: 48.00, image: "Tracksuit.png", sizes: standardSizes, customizable: false },
-            { id: 9, name: "Polo", price: 24.50, image: "Polo.jpg", sizes: standardSizes, customizable: false }
+            { id: 1, name: "Maglia di gioco", price: 31.90, image: "MAGLIA DI GIOCO.jpg", sizes: standardSizes, colors: ["Rossa", "Nera"], needsName: true, needsNumber: true },
+            { id: 2, name: "Pantaloncini di gioco", price: 27.50, image: "Pantaloncini gioco.jpg", sizes: standardSizes, colors: [], needsName: false, needsNumber: true },
+            { id: 3, name: "Maglia di gioco Portiere", price: 40.90, image: "Maglia portiere gioco.jpg", sizes: standardSizes, colors: ["Rosa", "Nera", "Azzurra"], needsName: true, needsNumber: true },
+            { id: 4, name: "Pantalone di gioco portiere", price: 41.00, image: "Pantalone portiere.jpg", sizes: standardSizes, colors: [], needsName: false, needsNumber: true },
+            { id: 5, name: "Zaino", price: 23.50, image: "Zaino.jpg", sizes: [], colors: [], needsName: false, needsNumber: false },
+            { id: 6, name: "Bermuda", price: 24.50, image: "Bermudas.jpg", sizes: standardSizes, colors: [], needsName: false, needsNumber: false },
+            { id: 7, name: "Giubbotto", price: 48.00, image: "Bench jacket.jpg", sizes: standardSizes, colors: [], needsName: false, needsNumber: false },
+            { id: 8, name: "Tuta", price: 48.00, image: "Tracksuit.png", sizes: standardSizes, colors: [], needsName: false, needsNumber: false },
+            { id: 9, name: "Polo", price: 24.50, image: "Polo.jpg", sizes: standardSizes, colors: ["Nera", "Verde", "Rossa"], needsName: false, needsNumber: false }
         ];
 
         let cart = JSON.parse(localStorage.getItem('shopvilCart')) || [];
@@ -193,6 +188,7 @@
             grid.innerHTML = '';
             
             products.forEach(p => {
+                // Selector de Talla
                 let sizeHtml = '';
                 if(p.sizes && p.sizes.length > 0) {
                     sizeHtml = `<select id="size-${p.id}" class="border border-gray-300 rounded p-1 text-sm ml-2 font-medium bg-gray-50 outline-none focus:border-aretusa-red">
@@ -200,18 +196,33 @@
                     </select>`;
                 }
 
-                let customizationHtml = '';
-                if(p.customizable) {
-                    customizationHtml = `
-                        <div class="mt-4 mb-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                            <p class="text-[10px] font-bold text-gray-500 mb-2 uppercase tracking-wider"><i class="fas fa-pen mr-1"></i> Personalizzazione</p>
-                            <input type="text" id="custom-name-${p.id}" placeholder="Nome (es. ROSSI)" class="w-full mb-2 p-2 text-sm border border-gray-300 rounded outline-none focus:border-aretusa-red uppercase transition">
-                            <input type="number" id="custom-number-${p.id}" placeholder="Numero (es. 10)" class="w-full p-2 text-sm border border-gray-300 rounded outline-none focus:border-aretusa-red transition" min="0" max="99">
-                        </div>
-                    `;
+                // Selector de Color
+                let colorHtml = '';
+                if(p.colors && p.colors.length > 0) {
+                    colorHtml = `
+                    <div class="mt-2 flex items-center justify-between">
+                        <span class="text-xs font-bold text-gray-500 uppercase">Colore:</span>
+                        <select id="color-${p.id}" class="border border-gray-300 rounded p-1 text-sm font-medium bg-gray-50 outline-none focus:border-aretusa-red w-32">
+                            ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
+                        </select>
+                    </div>`;
                 }
 
-                // CORRECCIÓN VISUAL: Caja h-64 (altura fija) con object-contain y mix-blend-multiply
+                // Personalización Específica
+                let customizationHtml = '';
+                if(p.needsName || p.needsNumber) {
+                    customizationHtml = `<div class="mt-3 mb-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <p class="text-[10px] font-bold text-gray-500 mb-2 uppercase tracking-wider"><i class="fas fa-pen mr-1"></i> Personalizzazione</p>`;
+                    
+                    if (p.needsName) {
+                        customizationHtml += `<input type="text" id="custom-name-${p.id}" placeholder="Nome (es. ROSSI)" class="w-full mb-2 p-2 text-sm border border-gray-300 rounded outline-none focus:border-aretusa-red uppercase transition">`;
+                    }
+                    if (p.needsNumber) {
+                        customizationHtml += `<input type="number" id="custom-number-${p.id}" placeholder="Numero (es. 10)" class="w-full p-2 text-sm border border-gray-300 rounded outline-none focus:border-aretusa-red transition" min="0" max="99">`;
+                    }
+                    customizationHtml += `</div>`;
+                }
+
                 grid.innerHTML += `
                     <div class="bg-white rounded-xl shadow-md overflow-hidden group flex flex-col border border-gray-100">
                         <div class="bg-gray-100 flex items-center justify-center h-64 p-4 overflow-hidden">
@@ -219,10 +230,11 @@
                         </div>
                         <div class="p-6 flex flex-col flex-grow">
                             <h3 class="font-bold text-xl mb-2 text-gray-800">${p.name}</h3>
-                            <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center justify-between mb-1">
                                 <span class="text-2xl font-bold text-aretusa-red">€${p.price.toFixed(2)}</span>
                                 ${sizeHtml}
                             </div>
+                            ${colorHtml}
                             ${customizationHtml}
                             <div class="mt-auto pt-4">
                                 <button onclick="addToCart(${p.id})" class="w-full bg-aretusa-red text-white py-3 px-4 rounded-xl font-bold hover:bg-red-700 transition shadow-sm active:scale-95">
@@ -263,20 +275,14 @@
 
         function addToCart(id) {
             const product = products.find(p => p.id === id);
-            const sizeSelect = document.getElementById(`size-${id}`);
-            const size = sizeSelect ? sizeSelect.value : 'Unica';
+            const size = document.getElementById(`size-${id}`) ? document.getElementById(`size-${id}`).value : 'Unica';
+            const color = document.getElementById(`color-${id}`) ? document.getElementById(`color-${id}`).value : '';
             
-            let customName = '';
-            let customNumber = '';
-            
-            if (product.customizable) {
-                customName = document.getElementById(`custom-name-${id}`).value.trim().toUpperCase();
-                customNumber = document.getElementById(`custom-number-${id}`).value.trim();
-            }
+            let customName = product.needsName ? document.getElementById(`custom-name-${id}`).value.trim().toUpperCase() : '';
+            let customNumber = product.needsNumber ? document.getElementById(`custom-number-${id}`).value.trim() : '';
 
-            const uniqueCartId = product.customizable 
-                ? `a_${id}_${size}_${customName}_${customNumber}` 
-                : `a_${id}_${size}`;
+            // ID único que separa variaciones
+            const uniqueCartId = `a_${id}_${size}_${color}_${customName}_${customNumber}`;
 
             const item = cart.find(i => i.uniqueCartId === uniqueCartId);
             
@@ -284,19 +290,16 @@
                 item.quantity++;
             } else {
                 cart.push({ 
-                    ...product, size, quantity: 1, isHummel: false, customName, customNumber, uniqueCartId 
+                    ...product, size, color, quantity: 1, isHummel: false, customName, customNumber, uniqueCartId 
                 });
             }
             
             updateCartUI(); saveCart(); showToast(`Aggiunto!`); toggleCart();
 
-            if (product.customizable) {
-                document.getElementById(`custom-name-${id}`).value = '';
-                document.getElementById(`custom-number-${id}`).value = '';
-            }
+            if (product.needsName) document.getElementById(`custom-name-${id}`).value = '';
+            if (product.needsNumber) document.getElementById(`custom-number-${id}`).value = '';
         }
 
-        // COMPRESOR DE IMÁGENES HUMMEL INTEGRADO
         function addHummelToCart() {
             const name = document.getElementById('hummel-name').value.trim();
             const ref = document.getElementById('hummel-ref').value.trim();
@@ -310,7 +313,7 @@
                     uniqueCartId: 'h_' + Date.now(), 
                     name, price: 0, 
                     image: compressedDataUrl || 'https://via.placeholder.com/100x100?text=Foto+Non+Fornita', 
-                    sizes: [size], size, quantity: 1, isHummel: true, hummelRef: ref, hasRealPhoto: !!compressedDataUrl
+                    sizes: [size], size, color: '', quantity: 1, isHummel: true, hummelRef: ref, hasRealPhoto: !!compressedDataUrl
                 });
                 updateCartUI(); saveCart(); showToast('Articolo Hummel aggiunto!'); toggleCart();
                 
@@ -323,19 +326,16 @@
             if (photoInput.files && photoInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) { 
-                    // Comprimir la imagen para que el correo no colapse
                     const img = new Image();
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 400; // Reducimos el ancho para que pese poquísimo en el email
+                        const MAX_WIDTH = 400;
                         const scaleSize = MAX_WIDTH / img.width;
                         canvas.width = MAX_WIDTH;
                         canvas.height = img.height * scaleSize;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        // Exportar como JPG ligero
-                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
-                        processHummelItem(compressedDataUrl);
+                        processHummelItem(canvas.toDataURL('image/jpeg', 0.6));
                     };
                     img.src = e.target.result;
                 };
@@ -371,19 +371,24 @@
                 
                 const pDisplay = i.isHummel ? '<span class="text-xs text-orange-500 bg-orange-50 px-2 py-1 rounded">Da preventivare</span>' : `€${iTotal.toFixed(2)}`;
                 
-                let customInfoHtml = '';
-                if (i.customizable && (i.customName || i.customNumber)) {
-                    customInfoHtml = `<p class="text-[11px] font-bold text-blue-600 mt-1.5 bg-blue-50 inline-block px-2 py-0.5 rounded">Nome: ${i.customName || '-'} | N°: ${i.customNumber || '-'}</p>`;
-                }
+                let detailsHtml = `<span class="font-bold text-gray-700">${i.size}</span>`;
+                if(i.color) detailsHtml += ` | Colore: <span class="font-bold text-gray-700">${i.color}</span>`;
+                if(i.isHummel) detailsHtml += ` | Ref: ${i.hummelRef}`;
 
-                let imgSrc = i.isHummel && i.hasRealPhoto ? i.image : i.image;
+                let customInfoHtml = '';
+                if (i.customName || i.customNumber) {
+                    customInfoHtml = `<p class="text-[11px] font-bold text-blue-600 mt-1.5 bg-blue-50 inline-block px-2 py-0.5 rounded">`;
+                    if(i.customName) customInfoHtml += `Nome: ${i.customName} `;
+                    if(i.customNumber) customInfoHtml += `| N°: ${i.customNumber}`;
+                    customInfoHtml += `</p>`;
+                }
 
                 return `
                     <div class="flex items-start space-x-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm relative">
-                        <img src="${imgSrc}" class="w-16 h-16 object-contain rounded-md border border-gray-200 mix-blend-multiply" onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=Nessuna';">
+                        <img src="${i.image}" class="w-16 h-16 object-contain rounded-md border border-gray-200 mix-blend-multiply" onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=Nessuna';">
                         <div class="flex-1">
                             <h4 class="font-bold text-gray-800 leading-tight line-clamp-1">${i.name}</h4>
-                            <p class="text-xs text-gray-500 mt-1">Taglia: <span class="font-bold text-gray-700">${i.size}</span> ${i.isHummel ? `| Ref: ${i.hummelRef}` : ''}</p>
+                            <p class="text-xs text-gray-500 mt-1">Taglia: ${detailsHtml}</p>
                             ${customInfoHtml}
                             
                             <div class="flex justify-between items-center mt-3">
@@ -401,24 +406,26 @@
             document.getElementById('cart-total').innerText = `€${total.toFixed(2)}`;
         }
 
-        // --- INTEGRACIÓN MEJORADA CON GOOGLE APPS SCRIPT ---
         async function sendOrderGoogle() {
-            // TU ENLACE YA INSERTADO
+            // URL DE GOOGLE APPS SCRIPT
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbylNZ7WbQ0-WSmVVUb1W4ryxFrTNilT43rVKokE7qXnd3MJdVilW_4JNzXch3wUh-gD/exec"; 
 
             const customerName = document.getElementById('customer-name').value.trim();
             const customerPhone = document.getElementById('customer-phone').value.trim();
+            const customerEmail = document.getElementById('customer-email').value.trim();
             const customerTeam = document.getElementById('customer-team').value;
 
             if (cart.length === 0) return showToast('Il carrello è vuoto.', 'error');
-            if (!customerName || !customerPhone || !customerTeam) return showToast('Compila tutti i dati.', 'error');
+            if (!customerName || !customerPhone || !customerTeam || !customerEmail) return showToast('Compila tutti i dati.', 'error');
             
+            // Generar Referencia Única
+            const refPedido = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+
             const btn = document.getElementById('send-order-btn');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Invio in corso...';
             btn.disabled = true;
 
-            // Formamos la ruta base oficial de tu GitHub de manera segura
             let pathArray = window.location.pathname.split('/');
             if(pathArray[pathArray.length-1].includes('.html')) pathArray.pop();
             let baseUrl = window.location.origin + pathArray.join('/') + '/';
@@ -430,10 +437,9 @@
                 
                 if(item.isHummel) {
                     let imgSrc = item.hasRealPhoto ? item.image : "https://via.placeholder.com/150?text=Nessuna+Foto";
-                    
                     orderSummaryHtml += `
                     <div style="display: flex; margin-bottom: 20px; border-bottom: 1px solid #eaeaea; padding-bottom: 15px;">
-                        <img src="${imgSrc}" style="max-width: 120px; max-height: 120px; object-fit: contain; border-radius: 8px; margin-right: 20px; border: 1px solid #ddd;" />
+                        <img src="${imgSrc}" style="max-width: 100px; max-height: 100px; object-fit: contain; border-radius: 8px; margin-right: 20px; border: 1px solid #ddd;" />
                         <div>
                             <h4 style="margin: 0 0 8px 0; color: #c8102e; font-size: 16px;">🔴 [HUMMEL] ${item.quantity}x ${item.name}</h4>
                             <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Referenza:</strong> ${item.hummelRef}</p>
@@ -442,18 +448,22 @@
                         </div>
                     </div>`;
                 } else {
-                    // Convertimos la URL para que no falle si la foto tiene espacios (Ej: "Bench jacket.jpg" -> "Bench%20jacket.jpg")
                     let fullImageUrl = baseUrl + encodeURIComponent(item.image);
+                    let attrExtra = "";
+                    if(item.color) attrExtra += ` | Colore: ${item.color}`;
 
                     orderSummaryHtml += `
                     <div style="display: flex; margin-bottom: 20px; border-bottom: 1px solid #eaeaea; padding-bottom: 15px;">
-                        <img src="${fullImageUrl}" style="max-width: 120px; max-height: 120px; object-fit: contain; border-radius: 8px; margin-right: 20px; border: 1px solid #ddd;" />
+                        <img src="${fullImageUrl}" style="max-width: 100px; max-height: 100px; object-fit: contain; border-radius: 8px; margin-right: 20px; border: 1px solid #ddd;" />
                         <div>
                             <h4 style="margin: 0 0 8px 0; color: #006747; font-size: 16px;">🟢 [ARETUSA] ${item.quantity}x ${item.name}</h4>
-                            <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Taglia:</strong> ${item.size}</p>`;
+                            <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Taglia:</strong> ${item.size} ${attrExtra}</p>`;
                     
-                    if (item.customizable && (item.customName || item.customNumber)) {
-                        orderSummaryHtml += `<p style="margin: 0 0 5px 0; font-size: 14px; background-color: #eef2ff; padding: 5px; border-radius: 4px; color: #3730a3;"><strong>Personalizzazione:</strong> Nome [${item.customName || 'Nessuno'}] / N° [${item.customNumber || 'Nessuno'}]</p>`;
+                    if (item.customName || item.customNumber) {
+                        let msg = "";
+                        if(item.customName) msg += `Nome [${item.customName}] `;
+                        if(item.customNumber) msg += `N° [${item.customNumber}]`;
+                        orderSummaryHtml += `<p style="margin: 0 0 5px 0; font-size: 14px; background-color: #eef2ff; padding: 5px; border-radius: 4px; color: #3730a3;"><strong>Personalizzazione:</strong> ${msg}</p>`;
                     }
                     
                     orderSummaryHtml += `
@@ -472,7 +482,9 @@
             const formData = new FormData();
             formData.append('nombre', customerName);
             formData.append('telefono', customerPhone);
+            formData.append('email', customerEmail);
             formData.append('squadra', customerTeam);
+            formData.append('referencia', refPedido);
             formData.append('ordenHtml', orderSummaryHtml);
             
             try {
@@ -482,10 +494,11 @@
                     body: formData
                 });
 
-                showToast('Ordine inviato con successo via Email!', 'success');
+                showToast('Ordine inviato! Controlla la tua email.', 'success');
                 cart = []; saveCart(); updateCartUI(); toggleCart();
                 document.getElementById('customer-name').value = '';
                 document.getElementById('customer-phone').value = '';
+                document.getElementById('customer-email').value = '';
                 document.getElementById('customer-team').value = '';
                 
             } catch(error) {
