@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Pallamano Aretusa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+        body { font-family: 'Montserrat', sans-serif; }
+        .bg-aretusa-red { background-color: #c8102e; }
+        .text-aretusa-red { color: #c8102e; }
+        .bg-aretusa-green { background-color: #006747; }
+        .text-aretusa-green { color: #006747; }
+        /* Estilos para el input file personalizado */
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .file-upload__input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            font-size: 1;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        /* Estilos para Toast */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+        .toast {
+            background-color: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
+        }
+        .toast i { margin-right: 10px; }
+        .toast.success { background-color: #006747; }
+        .toast.error { background-color: #c8102e; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md fixed w-full z-10 top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <!-- Logo placeholder - Reemplazar con imagen real -->
+                    <div class="h-10 w-10 rounded-full bg-aretusa-red flex items-center justify-center text-white font-bold mr-2">PA</div>
+                    <span class="font-bold text-xl text-gray-800">Pallamano Aretusa Store</span>
+                </div>
+                <div class="relative cursor-pointer" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart text-2xl text-gray-600 hover:text-aretusa-red transition"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-aretusa-red text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">0</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+
+        <!-- Sistema de Pestañas (Tabs) -->
+        <div class="mb-8">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                    <!-- Pestaña Aretusa (Activa por defecto) -->
+                    <button id="tab-aretusa-btn" onclick="switchTab('aretusa')" class="tab-btn border-aretusa-red text-aretusa-red whitespace-nowrap py-4 px-1 border-b-2 font-bold text-lg flex items-center">
+                        <i class="fas fa-tshirt mr-2"></i> Store Aretusa
+                    </button>
+                    <!-- Pestaña Hummel -->
+                    <button id="tab-hummel-btn" onclick="switchTab('hummel')" class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg flex items-center">
+                        <i class="fas fa-clipboard-list mr-2"></i> Catalogo Hummel (Su Ordinazione)
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Contenido Pestaña Aretusa -->
+        <section id="tab-aretusa-content" class="tab-content">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Prodotti Ufficiali Pallamano Aretusa</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="product-grid">
+                <!-- Los productos se cargarán aquí dinámicamente con JS -->
+            </div>
+        </section>
+
+        <!-- Contenido Pestaña Hummel (Formulario de Pedido Personalizado con Diseño Profesional) -->
+        <section id="tab-hummel-content" class="tab-content hidden">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden md:flex">
+                <!-- Columna Izquierda: Previsualización de Imagen -->
+                <div class="md:w-1/2 bg-gray-100 flex items-center justify-center p-8 relative min-h-[300px] md:min-h-[500px]">
+                     <!-- Placeholder Inicial -->
+                    <div id="hummel-image-placeholder" class="text-center transition-opacity duration-300 opacity-100 absolute inset-0 flex flex-col items-center justify-center p-6">
+                        <i class="fas fa-camera text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 font-medium">Carica qui la foto dal catalogo Hummel</p>
+                        <p class="text-gray-400 text-sm mt-2">La tua immagine apparirà qui.</p>
+                    </div>
+                    <!-- Imagen Previsualizada -->
+                    <img id="hummel-image-preview" src="" alt="Anteprima Prodotto Hummel" class="w-full h-full object-contain transition-opacity duration-300 opacity-0 z-10 relative rounded-lg shadow-sm hidden">
+                </div>
+
+                 <!-- Columna Derecha: Formulario de Detalles -->
+                <div class="md:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-white">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-extrabold text-gray-900 leading-tight mb-2">Nuovo Articolo Hummel</h2>
+                        <p class="text-gray-600">Configura il prodotto che hai visto sul catalogo ufficiale.</p>
+                    </div>
+
+                    <form id="hummel-order-form" class="space-y-6">
+                        <!-- Input de Nombre con estilo de título -->
+                        <div>
+                            <label for="hummel-name" class="sr-only">Nome Prodotto</label>
+                            <input type="text" id="hummel-name" class="block w-full border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-aretusa-red text-xl font-bold placeholder-gray-300 py-2 px-0 transition-colors" placeholder="Es. Felpa Core Poly">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <!-- Input de Referencia con estilo de SKU -->
+                            <div>
+                                <label for="hummel-ref" class="block text-sm font-medium text-gray-700 mb-1">Numero di Referenza (SKU)</label>
+                                <div class="relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-barcode text-gray-400"></i>
+                                    </div>
+                                    <input type="text" id="hummel-ref" class="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-lg focus:ring-aretusa-red focus:border-aretusa-red sm:text-sm font-mono bg-gray-50 placeholder-gray-400 transition-all" placeholder="Es. 203456-2001">
+                                </div>
+                            </div>
+                             <!-- Input de Talla -->
+                            <div>
+                                <label for="hummel-size" class="block text-sm font-medium text-gray-700 mb-1">Taglia</label>
+                                <select id="hummel-size" class="block w-full pl-3 pr-10 py-3 text-base border border-gray-200 focus:outline-none focus:ring-aretusa-red focus:border-aretusa-red sm:text-sm rounded-lg bg-white transition-all">
+                                    <option value="">Seleziona</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="XXL">XXL</option>
+                                    <option value="TU">Taglia Unica</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Botón de Subir Foto Estilizado -->
+                        <div class="file-upload w-full">
+                            <button type="button" class="w-full bg-white border-2 border-dashed border-gray-300 text-gray-600 py-4 px-4 rounded-xl font-bold hover:border-aretusa-green hover:text-aretusa-green transition-all group flex items-center justify-center">
+                                <i class="fas fa-cloud-upload-alt mr-3 text-xl group-hover:scale-110 transition-transform"></i> Scegli la Foto del Prodotto...
+                            </button>
+                            <input type="file" id="hummel-photo" accept="image/*" class="file-upload__input" onchange="previewHummelImage(this)">
+                        </div>
+
+
+                        <!-- Botón de Añadir -->
+                        <button type="button" onclick="addHummelToCart()" class="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-xl shadow-md text-lg font-bold text-white bg-aretusa-green hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-aretusa-green transition-all transform hover:scale-[1.02] active:scale-[0.98] mt-8">
+                            <i class="fas fa-cart-plus mr-3"></i> Aggiungi al Carrello
+                        </button>
+
+                        <p class="text-xs text-center text-gray-500 mt-4">
+                            <i class="fas fa-info-circle text-aretusa-red"></i> Il prezzo finale con lo sconto club verrà comunicato successivamente.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Carrito Lateral (Sidebar) -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-30 flex flex-col">
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-800"><i class="fas fa-shopping-cart mr-2"></i>Il tuo Carrello</h2>
+            <button onclick="toggleCart()" class="text-gray-500 hover:text-gray-800 transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-6 space-y-6" id="cart-items">
+            <!-- Los items del carrito se renderizarán aquí -->
+            <p class="text-gray-500 text-center py-8">Il tuo carrello è vuoto.</p>
+        </div>
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+             <!-- Campos de Datos del Cliente -->
+             <div class="mb-4 space-y-3">
+                <h3 class="font-bold text-gray-700 mb-2">I tuoi Dati (Obbligatori)</h3>
+                <input type="text" id="customer-name" placeholder="Nome e Cognome *" class="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-aretusa-red focus:border-aretusa-red">
+                <input type="tel" id="customer-phone" placeholder="Telefono *" class="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-aretusa-red focus:border-aretusa-red">
+                <select id="customer-team" class="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-aretusa-red focus:border-aretusa-red bg-white">
+                    <option value="">Categoria/Squadra *</option>
+                    <option value="Senior Maschile">Senior Maschile</option>
+                    <option value="Senior Femminile">Senior Femminile</option>
+                    <option value="U17">Under 17</option>
+                    <option value="U15">Under 15</option>
+                    <option value="U13">Under 13</option>
+                    <option value="Altro/Tifoso">Altro / Tifoso</option>
+                </select>
+            </div>
+
+            <div class="flex justify-between items-center mb-4">
+                <span class="font-bold text-lg text-gray-700">Totale Stimato:</span>
+                <span id="cart-total" class="font-bold text-2xl text-aretusa-red">€0.00</span>
+            </div>
+             <p class="text-xs text-gray-500 mb-4 italic">*Esclusi articoli Hummel su ordinazione</p>
+             <!-- Botón de Enviar a Telegram -->
+            <button id="send-order-btn" onclick="sendDirectToTelegram()" class="w-full bg-blue-600 text-white py-3 px-4 rounded-xl hover:bg-blue-700 transition font-bold flex items-center justify-center shadow-md">
+                <i class="fab fa-telegram-plane mr-2 text-xl"></i> Invia Ordine via Telegram
+            </button>
+        </div>
+    </div>
+    <!-- Overlay para cerrar el carrito -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-20" onclick="toggleCart()"></div>
+
+    <!-- Contenedor de Toasts -->
+    <div id="toast-container"></div>
+
+    <!-- Footer Profesional -->
+    <footer class="bg-gray-800 text-white pt-12 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Columna 1: Info Club -->
+            <div class="mb-6 md:mb-0">
+                 <div class="flex items-center mb-4">
+                    <div class="h-8 w-8 rounded-full bg-aretusa-red flex items-center justify-center text-white font-bold mr-2 text-sm">PA</div>
+                    <span class="font-bold text-lg">Pallamano Aretusa</span>
+                </div>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Passione, impegno e spirito di squadra. Il cuore della pallamano a Siracusa.
+                </p>
+            </div>
+            <!-- Columna 2: Contatti & Sede -->
+            <div class="mb-6 md:mb-0">
+                <h3 class="font-bold text-lg mb-4 text-gray-200">Contatti & Sede</h3>
+                <ul class="text-gray-400 text-sm space-y-2">
+                    <li><i class="fas fa-map-marker-alt mr-2 text-aretusa-red w-5 text-center"></i> Pala Lo Bello, Siracusa (SR)</li>
+                    <li><i class="fas fa-envelope mr-2 text-aretusa-red w-5 text-center"></i> <a href="mailto:tecnicobalonmanovila@gmail.com" class="hover:text-white transition">tecnicobalonmanovila@gmail.com</a></li>
+                     <li><i class="fas fa-phone mr-2 text-aretusa-red w-5 text-center"></i> +39 333 000 0000</li>
+                </ul>
+            </div>
+            <!-- Columna 3: Social -->
+            <div>
+                <h3 class="font-bold text-lg mb-4 text-gray-200">Seguici</h3>
+                <div class="flex space-x-4">
+                    <a href="#" class="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-white hover:bg-aretusa-red transition"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-white hover:bg-aretusa-red transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-white hover:bg-aretusa-red transition"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-700 text-center text-gray-500 text-sm">
+            <p>&copy; 2024 Pallamano Aretusa. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        // --- Configuración ---
+        // Base de datos de productos propios (Aretusa) - INICIALMENTE VACÍA
+        // Para añadir productos, usa este formato:
+        // { id: 1, name: "Maglia Gara Home", price: 45.00, image: "URL_IMAGEN", sizes: ["S", "M", "L", "XL"] },
+        const products = [
+             // Ejemplo 1: Camiseta
+            {
+                id: 101,
+                name: "T-Shirt Allenamento Aretusa",
+                price: 25.00,
+                image: "https://via.placeholder.com/300x300/006747/ffffff?text=T-Shirt+Training", // Reemplazar con foto real
+                sizes: ["XS", "S", "M", "L", "XL", "XXL"]
+            },
+            // Ejemplo 2: Sudadera
+            {
+                id: 102,
+                name: "Felpa Cappuccio Rossa",
+                price: 55.00,
+                image: "https://via.placeholder.com/300x300/c8102e/ffffff?text=Felpa+Hoodie", // Reemplazar con foto real
+                sizes: ["S", "M", "L", "XL"]
+            }
+        ];
+
+        // Estado del Carrito (Se carga del localStorage si existe)
+        let cart = JSON.parse(localStorage.getItem('aretusaCart')) || [];
+
+        // --- Funciones de Toast (Notificaciones) ---
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            toastContainer.appendChild(toast);
+            // Eliminar el toast del DOM después de la animación (3s total)
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // --- Funciones de la Interfaz ---
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            updateCartUI();
+        });
+
+        // Renderizar productos Aretusa en la cuadrícula
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            if (products.length === 0) {
+                grid.innerHTML = '<p class="col-span-full text-center text-gray-500 py-8">Nessun prodotto disponibile al momento.</p>';
+                return;
+            }
+            grid.innerHTML = ''; // Limpiar
+            products.forEach(product => {
+                let sizeSelectorHtml = '';
+                if (product.sizes && product.sizes.length > 0) {
+                    sizeSelectorHtml = `
+                        <select id="size-select-${product.id}" class="border border-gray-300 rounded-md p-1 text-sm ml-2 focus:ring-aretusa-red focus:border-aretusa-red">
+                            ${product.sizes.map(size => `<option value="${size}">${size}</option>`).join('')}
+                        </select>
+                    `;
+                }
+
+                const productCard = `
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition group">
+                        <div class="relative overflow-hidden">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover transform group-hover:scale-105 transition duration-500">
+                            <div class="absolute top-0 right-0 bg-aretusa-green text-white px-3 py-1 m-2 rounded-full text-sm font-bold shadow-sm">Stock</div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl mb-2 text-gray-800">${product.name}</h3>
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-2xl font-bold text-aretusa-red">€${product.price.toFixed(2)}</span>${sizeSelectorHtml}
+                            </div>
+                            <button onclick="addToCart(${product.id})" class="w-full bg-aretusa-red text-white py-3 px-4 rounded-xl hover:bg-red-700 transition font-bold flex justify-center items-center shadow-md active:scale-95 transform">
+                                <i class="fas fa-cart-plus mr-2"></i> Aggiungi al Carrello
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += productCard;
+            });
+        }
+
+        // Cambiar entre pestañas
+        function switchTab(tabName) {
+            const aretusaBtn = document.getElementById('tab-aretusa-btn');
+            const hummelBtn = document.getElementById('tab-hummel-btn');
+            const aretusaContent = document.getElementById('tab-aretusa-content');
+            const hummelContent = document.getElementById('tab-hummel-content');
+
+            if (tabName === 'aretusa') {
+                aretusaBtn.classList.add('border-aretusa-red', 'text-aretusa-red');
+                aretusaBtn.classList.remove('border-transparent', 'text-gray-500');
+                hummelBtn.classList.remove('border-aretusa-red', 'text-aretusa-red');
+                hummelBtn.classList.add('border-transparent', 'text-gray-500');
+
+                aretusaContent.classList.remove('hidden');
+                hummelContent.classList.add('hidden');
+            } else {
+                hummelBtn.classList.add('border-aretusa-red', 'text-aretusa-red');
+                hummelBtn.classList.remove('border-transparent', 'text-gray-500');
+                aretusaBtn.classList.remove('border-aretusa-red', 'text-aretusa-red');
+                aretusaBtn.classList.add('border-transparent', 'text-gray-500');
+
+                hummelContent.classList.remove('hidden');
+                aretusaContent.classList.add('hidden');
+            }
+        }
+        
+        // Función para previsualizar la imagen de Hummel al seleccionarla
+        function previewHummelImage(input) {
+            const preview = document.getElementById('hummel-image-preview');
+            const placeholder = document.getElementById('hummel-image-placeholder');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    // Mostrar imagen, ocultar placeholder
+                    preview.classList.remove('hidden', 'opacity-0');
+                    preview.classList.add('opacity-100');
+                    placeholder.classList.remove('opacity-100');
+                    placeholder.classList.add('opacity-0', 'hidden');
+                }
+                
+                reader.readAsDataURL(input.files[0]); // Leer el archivo como URL data
+            } else {
+                // Resetear si no hay archivo seleccionado
+                preview.src = "";
+                preview.classList.add('hidden', 'opacity-0');
+                preview.classList.remove('opacity-100');
+                placeholder.classList.remove('opacity-0', 'hidden');
+                placeholder.classList.add('opacity-100');
+            }
+        }
+
+
+        // Abrir/Cerrar Carrito
+        function toggleCart() {
+            const sidebar = document.getElementById('cart-sidebar');
+            const overlay = document.getElementById('cart-overlay');
+            if (sidebar.classList.contains('translate-x-full')) {
+                sidebar.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // --- Funciones del Carrito ---
+
+        // Guardar carrito en LocalStorage
+        function saveCartToStorage() {
+            localStorage.setItem('aretusaCart', JSON.stringify(cart));
+        }
+
+        // Añadir producto Aretusa al carrito
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const sizeSelect = document.getElementById(`size-select-${productId}`);
+            const selectedSize = sizeSelect ? sizeSelect.value : 'Unica';
+
+            const cartItem = cart.find(item => item.id === productId && item.size === selectedSize && !item.isHummel);
+
+            if (cartItem) {
+                cartItem.quantity++;
+            } else {
+                cart.push({
+                    ...product,
+                    size: selectedSize,
+                    quantity: 1,
+                    isHummel: false
+                });
+            }
+            updateCartUI();
+            saveCartToStorage(); // Guardar cambios
+            showToast(`Aggiunto: ${product.name}`, 'success');
+            toggleCart(); // Abrir carrito para feedback visual
+        }
+
+        // Añadir producto Hummel personalizado al carrito
+        function addHummelToCart() {
+            const nameInput = document.getElementById('hummel-name');
+            const refInput = document.getElementById('hummel-ref');
+            const sizeInput = document.getElementById('hummel-size');
+            const photoInput = document.getElementById('hummel-photo');
+
+            const name = nameInput.value.trim();
+            const ref = refInput.value.trim();
+            const size = sizeInput.value;
+            const photoFile = photoInput.files[0];
+
+            if (!name || !ref || !size) {
+                showToast('Per favore, compila Nome, Referenza e Taglia.', 'error');
+                return;
+            }
+
+            // Función auxiliar para procesar y añadir el item
+            const processHummelItem = (imageDataUrl) => {
+                 // Generar un ID único para items personalizados basado en la fecha
+                const uniqueId = 'h_' + Date.now();
+                cart.push({
+                    id: uniqueId,
+                    name: name,
+                    price: 0, // Precio pendiente
+                    image: imageDataUrl || 'https://via.placeholder.com/100x100/e5e7eb/9ca3af?text=No+Foto', // Placeholder si no hay foto
+                    sizes: [size],
+                    size: size,
+                    quantity: 1,
+                    isHummel: true,
+                    hummelRef: ref,
+                    hasRealPhoto: !!imageDataUrl // Flag para saber si el usuario subió foto real
+                });
+
+                updateCartUI();
+                saveCartToStorage(); // Guardar cambios
+                showToast('Articolo Hummel aggiunto al carrello!', 'success');
+                toggleCart();
+
+                // Limpiar formulario y previsualización
+                nameInput.value = '';
+                refInput.value = '';
+                sizeInput.value = '';
+                photoInput.value = '';
+                previewHummelImage(photoInput); // Resetear la previsualización visualmente
+            };
+
+
+            if (photoFile) {
+                // Si hay foto, la leemos como Data URL (Base64) antes de guardar
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    processHummelItem(e.target.result);
+                };
+                reader.onerror = function(e) {
+                     showToast('Errore durante il caricamento della foto.', 'error');
+                     processHummelItem(null); // Añadir sin foto en caso de error
+                }
+                reader.readAsDataURL(photoFile);
+            } else {
+                // Si no hay foto, añadir directamente con placeholder
+                processHummelItem(null);
+            }
+        }
+
+        // Eliminar del carrito
+        function removeFromCart(itemId, itemSize) {
+            const itemIndex = cart.findIndex(item => item.id === itemId && item.size === itemSize);
+            if (itemIndex > -1) {
+                cart.splice(itemIndex, 1);
+                updateCartUI();
+                saveCartToStorage(); // Guardar cambios
+                showToast('Prodotto rimosso.', 'success');
+            }
+        }
+
+        // Actualizar cantidad
+        function updateQuantity(itemId, itemSize, change) {
+             const item = cart.find(item => item.id === itemId && item.size === itemSize);
+             if (item) {
+                 item.quantity += change;
+                 if (item.quantity <= 0) {
+                     removeFromCart(itemId, itemSize);
+                 } else {
+                     updateCartUI();
+                     saveCartToStorage();
+                 }
+             }
+        }
+
+
+        // Actualizar la interfaz del carrito (Renderizar items y total)
+        function updateCartUI() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartCountElement = document.getElementById('cart-count');
+            const cartTotalElement = document.getElementById('cart-total');
+
+            cartCountElement.innerText = cart.reduce((total, item) => total + item.quantity, 0);
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-gray-400">
+                        <i class="fas fa-shopping-cart text-5xl mb-4 opacity-50"></i>
+                        <p class="text-lg font-medium">Il tuo carrello è vuoto.</p>
+                        <p class="text-sm">Aggiungi qualche prodotto!</p>
+                    </div>
+                `;
+                cartTotalElement.innerText = '€0.00';
+                return;
+            }
+
+            let total = 0;
+            cartItemsContainer.innerHTML = cart.map(item => {
+                const itemTotal = item.price * item.quantity;
+                if (!item.isHummel) {
+                    total += itemTotal;
+                }
+
+                const priceDisplay = item.isHummel ? '<span class="text-xs font-bold text-orange-500 bg-orange-100 px-2 py-1 rounded-full">Prezzo su preventivo</span>' : `€${itemTotal.toFixed(2)}`;
+                const hummelRefDisplay = item.isHummel ? `<p class="text-xs text-gray-500 mt-1"><i class="fas fa-barcode mr-1"></i>Ref: ${item.hummelRef}</p>` : '';
+                // Usamos una imagen más pequeña para el carrito si es un base64 largo para mejorar rendimiento
+                const imageSrc = item.image.startsWith('data:') ? item.image : item.image;
+
+
+                return `
+                    <div class="flex items-start space-x-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                        <img src="${imageSrc}" alt="${item.name}" class="w-20 h-20 object-cover rounded-lg border border-gray-200">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-gray-800 line-clamp-2">${item.name}</h4>
+                            <p class="text-sm text-gray-600">Taglia: <span class="font-medium">${item.size}</span></p>${hummelRefDisplay}
+                            <div class="flex justify-between items-center mt-3">
+                                <div class="font-bold text-aretusa-red">${priceDisplay}</div>
+                                <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                                    <button onclick="updateQuantity('${item.id}', '${item.size}', -1)" class="text-gray-500 hover:text-aretusa-red w-8 h-8 flex items-center justify-center focus:outline-none transition"><i class="fas fa-minus-circle"></i></button>
+                                    <span class="mx-2 font-bold text-gray-700 w-6 text-center">${item.quantity}</span>
+                                    <button onclick="updateQuantity('${item.id}', '${item.size}', 1)" class="text-gray-500 hover:text-aretusa-green w-8 h-8 flex items-center justify-center focus:outline-none transition"><i class="fas fa-plus-circle"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                         <button onclick="removeFromCart('${item.id}', '${item.size}')" class="text-gray-400 hover:text-red-500 transition p-2 focus:outline-none" title="Rimuovi">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            cartTotalElement.innerText = `€${total.toFixed(2)}`;
+        }
+
+
+        // --- Función de Envío a Telegram PROFESIONAL (Secuencia de Mensajes y Fotos) ---
+        async function sendDirectToTelegram() {
+             // --- CONFIGURACIÓN ---
+            // REEMPLAZA ESTOS VALORES CON LOS TUYOS REALES
+            const botToken = "8976761588:AAGMxqUNR0inRbj8Nsklnk3vMYQTPTMWJik";
+            const chatId = "1279318955";
+            // ----------------------
+
+            const customerNameInput = document.getElementById('customer-name');
+            const customerPhoneInput = document.getElementById('customer-phone');
+            const customerTeamSelect = document.getElementById('customer-team');
+            const sendBtn = document.getElementById('send-order-btn');
+            const totalPriceElement = document.getElementById('cart-total');
+
+            const customerName = customerNameInput.value.trim();
+            const customerPhone = customerPhoneInput.value.trim();
+            const customerTeam = customerTeamSelect.value;
+
+            if (cart.length === 0) {
+                showToast('Il carrello è vuoto.', 'error');
+                return;
+            }
+             if (!customerName || !customerPhone || !customerTeam) {
+                showToast('Compila tutti i dati (Nome, Telefono, Squadra) nel carrello.', 'error');
+                // Hacer focus en el primer campo vacío y un pequeño efecto visual
+                if(!customerName) customerNameInput.focus();
+                else if(!customerPhone) customerPhoneInput.focus();
+                else if(!customerTeam) customerTeamSelect.focus();
+                return;
+            }
+
+
+            // Estado de carga en el botón
+            const originalBtnText = sendBtn.innerHTML;
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Invio in corso...';
+            sendBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            sendBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+
+
+            try {
+                // --- PASO 1: Enviar Mensaje de Cabecera con Datos del Cliente ---
+                let headerMessage = `📦 *NUOVO ORDINE WEB* 📦\n\n👤 *Cliente:* ${customerName}\n📞 *Tel:* \`${customerPhone}\`\n🏟️ *Squadra:* ${customerTeam}\n\n👇 *Dettagli dei prodotti di seguito:* 👇`;
+
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: headerMessage,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+
+                // --- PASO 2: Enviar cada producto como una FOTO con CAPTION detallado y estilizado ---
+                for (const item of cart) {
+                    let detailedCaption = "";
+
+                    if (item.isHummel) {
+                        // Caption para productos Hummel - Usando Markdown para Telegram
+                        detailedCaption = `🔴 *ARTICOLO HUMMEL (Su Ordinazione)* 🔴\n\n` +
+                                          `👕 *Modello:* ${item.name}\n` +
+                                          `🔢 *Referenza:* \`${item.hummelRef}\`\n` +
+                                          `📏 *Taglia:* ${item.size}\n` +
+                                          `🛒 *Quantità:* ${item.quantity}\n\n` +
+                                          `💰 *Prezzo:* ⏳ In attesa di preventivo`;
+                    } else {
+                         // Caption para productos Aretusa - Usando Markdown
+                        const itemTotal = (item.price * item.quantity).toFixed(2);
+                        detailedCaption = `🟢 *PRODOTTO ARETUSA (Stock)* 🟢\n\n` +
+                                          `👕 *Articolo:* ${item.name}\n` +
+                                          `📏 *Taglia:* ${item.size}\n` +
+                                          `🛒 *Quantità:* ${item.quantity}\n\n` +
+                                          `💶 *Prezzo Unitario:* €${item.price.toFixed(2)}\n` +
+                                          `💰 *Subtotale:* €${itemTotal}`;
+                    }
+
+
+                    if (item.isHummel && item.hasRealPhoto && item.image.startsWith('data:image')) {
+                        // Base 64 a Blob
+                        const base64Data = item.image.split(',')[1];
+                        const byteCharacters = atob(base64Data);
+                        const byteNumbers = new Array(byteCharacters.length);
+                        for (let i = 0; i < byteCharacters.length; i++) {
+                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                        }
+                        const byteArray = new Uint8Array(byteNumbers);
+                        const blob = new Blob([byteArray], { type: 'image/jpeg' }); 
+
+                        // FormData
+                        const formData = new FormData();
+                        formData.append('chat_id', chatId);
+                        formData.append('photo', blob, `hummel_ref_${item.hummelRef}.jpg`); 
+                        formData.append('caption', detailedCaption); 
+                        formData.append('parse_mode', 'Markdown'); // ¡Activar Markdown para el caption!
+
+                        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                            method: 'POST',
+                            body: formData 
+                        });
+
+                    } else {
+                        // URL simple (Aretusa o Hummel sin foto)
+                        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                chat_id: chatId,
+                                photo: item.image, 
+                                caption: detailedCaption, 
+                                parse_mode: 'Markdown' // ¡Activar Markdown para el caption!
+                            })
+                        });
+                    }
+                    // Pequeña pausa
+                    await new Promise(r => setTimeout(r, 400));
+                }
+
+                 // --- PASO 3: Enviar Mensaje de Cierre con el Total ---
+                let footerMessage = `✅ *FINE DELL'ORDINE* ✅\n\n` +
+                                    `💶 *Totale (Articoli Stock):* ${totalPriceElement.innerText}\n\n` +
+                                    `_Nota: Il prezzo finale per gli articoli Hummel deve essere comunicato al cliente per confermare l'ordine._`;
+
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: footerMessage,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+
+                // --- ÉXITO ---
+                showToast('Ordine inviato con successo!', 'success');
+                cart = [];
+                saveCartToStorage();
+                updateCartUI();
+                toggleCart();
+                customerNameInput.value = '';
+                customerPhoneInput.value = '';
+                customerTeamSelect.value = '';
+
+
+            } catch (error) {
+                console.error('Errore invio Telegram:', error);
+                showToast('Errore durante l\'invio. Riprova.', 'error');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = originalBtnText;
+                sendBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                sendBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            }
+        }
+
+    </script>
+</body>
+</html>
