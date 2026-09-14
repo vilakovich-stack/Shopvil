@@ -29,12 +29,10 @@
 </head>
 <body class="bg-gray-50">
 
-    <!-- Navbar con Logo -->
     <nav class="bg-white shadow-md fixed w-full z-10 top-0">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex-shrink-0 flex items-center">
-                    <!-- AQUÍ ESTÁ EL LOGO: Asegúrate de subir a GitHub un archivo llamado "logo.png" -->
                     <img src="logo.png" alt="ShopVil Logo" class="h-12 w-auto object-contain mr-3" onerror="this.src='https://via.placeholder.com/150/c8102e/ffffff?text=SV'">
                     <span class="font-bold text-xl text-gray-800">ShopVil <span class="text-sm font-normal text-gray-500 hidden sm:inline">| Pallamano Aretusa</span></span>
                 </div>
@@ -46,7 +44,6 @@
         </div>
     </nav>
 
-    <!-- Contenido Principal -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
         <div class="mb-8">
             <div class="border-b border-gray-200">
@@ -398,7 +395,7 @@
         }
 
         async function sendOrderGoogle() {
-            // URL OFICIAL DE TU PROYECTO
+            // URL DE GOOGLE (YA CONFIGURADA)
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbylNZ7WbQ0-WSmVVUb1W4ryxFrTNilT43rVKokE7qXnd3MJdVilW_4JNzXch3wUh-gD/exec"; 
 
             const customerName = document.getElementById('customer-name').value.trim();
@@ -423,6 +420,26 @@
             let orderSummaryHtml = "";
             let arrInlineImages = [];
             
+            // --- NUEVO: PREPARAR DATOS PARA EL EXCEL ---
+            let cartForExcel = cart.map(item => {
+                let excelImageUrl = "";
+                if (!item.isHummel) excelImageUrl = baseUrl + encodeURIComponent(item.image);
+
+                return {
+                    name: item.name,
+                    size: item.size,
+                    color: item.color || "",
+                    hummelRef: item.hummelRef || "",
+                    customName: item.customName || "",
+                    customNumber: item.customNumber || "",
+                    quantity: item.quantity,
+                    price: item.price,
+                    isHummel: item.isHummel,
+                    imageUrl: excelImageUrl 
+                };
+            });
+            // ------------------------------------------
+
             cart.forEach((item, index) => {
                 let itemTotal = (item.price * item.quantity).toFixed(2);
                 
@@ -432,10 +449,7 @@
                     
                     if (item.hasRealPhoto) {
                         imgSrc = "cid:" + cidName;
-                        arrInlineImages.push({
-                            cid: cidName,
-                            data: item.image
-                        });
+                        arrInlineImages.push({ cid: cidName, data: item.image });
                     }
 
                     orderSummaryHtml += `
@@ -487,6 +501,9 @@
             formData.append('squadra', customerTeam);
             formData.append('referencia', refPedido);
             formData.append('ordenHtml', orderSummaryHtml);
+            
+            // Enviamos los datos para el EXCEL
+            formData.append('cartData', JSON.stringify(cartForExcel));
             
             if (arrInlineImages.length > 0) {
                 formData.append('inlineImages', JSON.stringify(arrInlineImages));
